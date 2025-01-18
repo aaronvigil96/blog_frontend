@@ -1,13 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { MessageError } from "../components/MessageError";
+import { getProfile, loginRequest } from "../api/auth";
+import { LoginType } from "../types/login.type";
+import { useAuthStore } from "../store/authStore";
+import toast, { Toaster } from "react-hot-toast";
 
 const LoginPage = () => {
 
-    const { register, handleSubmit, formState: {errors} } = useForm();
+    const navigate = useNavigate();
 
-    const loginUser = () => {
-        console.log('Usuario logeado');
+    const setToken = useAuthStore(state => state.setToken);
+    const setProfile = useAuthStore(state => state.setProfile)
+
+    const { register, handleSubmit, formState: {errors} } = useForm<LoginType>();
+
+    const loginUser = async ({email,password}:LoginType) => {
+        try{
+            const user = await loginRequest(email, password);
+            setToken(user.data.token);
+            const profile = await getProfile();
+            setProfile(profile.data);
+            toast.success('Iniciaste sesión correctamente');
+            setTimeout(() => {
+                navigate('/')
+            }, 500)
+        }catch(err){
+            toast.error('Las credenciales son incorrectas');
+        }
     }
 
     return(
@@ -25,7 +45,7 @@ const LoginPage = () => {
                                     required: 'El email es obligatorio'
                                 })}
                             />
-                            {errors.email && (<MessageError>{errors.email?.message?.toString()}</MessageError>)}
+                            {errors.email && (<MessageError>{errors.email?.message}</MessageError>)}
                         </div>
                         <div>
                             <label className="max-w-max block font-thin" htmlFor="password">Contraseña:</label>
@@ -37,12 +57,13 @@ const LoginPage = () => {
                                     required: 'La contraseña es obligatoria'
                                 })}
                             />
-                            {errors.password && (<MessageError>{errors.password?.message?.toString()}</MessageError>)}
+                            {errors.password && (<MessageError>{errors.password?.message}</MessageError>)}
+                            <Toaster/>
                         </div>
                         
                     </div>
                     <p className="font-thin">¿No tienes cuenta? <Link to={'/register'} className="font-bold hover:text-gray-600">Registrate</Link></p>
-                    <button type="submit" className="py-3 bg-blue-600 w-full text-center rounded-sm font-bold text-gray-200 text-xl">Crear</button>
+                    <button type="submit" className="py-3 bg-blue-600 w-full text-center rounded-sm font-bold text-gray-200 text-xl">Iniciar sesión</button>
             </div>
         </form>
     )
