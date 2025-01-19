@@ -3,6 +3,7 @@ import CreatePost from "../components/CreatePost";
 import PostItem from "../components/PostItem";
 import { useAuthStore } from "../store/authStore";
 import { getAllPosts } from "../api/post";
+import { GetPostType } from "../types/get-post.type";
 
 const HomePage = () => {
 
@@ -21,12 +22,12 @@ const HomePage = () => {
 
     return(
         <>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4">
                 {
                     isAuth ? <CreatePost/> : null
                 }
                 {
-                    posts?.map((post) => (<PostItem post={post} key={post.id}/>))
+                    posts?.map((post: GetPostType) => (<PostItem key={post.id} post={post}/>))
                 }
             </div>
         </>
