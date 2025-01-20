@@ -4,6 +4,7 @@ import PostItem from "../components/PostItem";
 import { useAuthStore } from "../store/authStore";
 import { getAllPosts } from "../api/post";
 import { GetPostType } from "../types/get-post.type";
+import EventStream from "./EventStream";
 
 const HomePage = () => {
 
@@ -22,6 +23,7 @@ const HomePage = () => {
 
     return(
         <>
+            <EventStream/>
             <div className="flex flex-col gap-4">
                 {
                     isAuth ? <CreatePost/> : null
