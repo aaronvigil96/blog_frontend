@@ -4,6 +4,7 @@ import { MessageError } from './MessageError';
 import { CreatePostType } from '../types/create-post.type';
 import { createPost } from '../api/post';
 import toast, { Toaster } from 'react-hot-toast';
+import { usePostStore } from '../store/postStore';
 
 const CreatePost = () => {
 
@@ -13,15 +14,14 @@ const CreatePost = () => {
         try{
             const post = await createPost(data.title, data.content);
             toast.success('Posteado correctamente');
-            console.log(post)
+            usePostStore.getState().setHasNewPost(true);
         }catch(err){
-            console.log(err)
             toast.error('Ups, hubo un error');
         }
     }
 
     return(
-        <form className="w-1/2 ml-4 p-2" onSubmit={handleSubmit(handlePost)}>
+        <form className="w-1/2" onSubmit={handleSubmit(handlePost)}>
             <div className="">
                 <label className="text-white text-xl block" htmlFor="title">Titulo:</label>
                 <input 

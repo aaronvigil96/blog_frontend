@@ -8,13 +8,18 @@ const PostItem = ({post}:PostItemProps) => {
     const {title, content, createdAt} = post;
     const {username} = post.author || {};
 
-    let timeStamp = Date.parse(post.createdAt)
+    let timeStamp = Date.parse(createdAt)
     let date = new Date(timeStamp);
 
     const hour = date.getHours();
-    const minutes = date.getMinutes();
+    let minutes = date.getMinutes().toString();
 
     const day = date.getDate();
+
+    if(minutes.length === 1){
+        minutes = `0${minutes[0]}`
+    }
+
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
